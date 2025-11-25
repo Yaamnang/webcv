@@ -560,7 +560,7 @@ const WebCV = () => {
                   <span>{cvData.personal.location}</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                   <span>Available for work</span>
                 </div>
               </div>
@@ -628,7 +628,7 @@ const WebCV = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-white/60">Availability Status</span>
                   <span className="flex items-center space-x-2 text-white">
-                    <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                     <span>Available</span>
                   </span>
                 </div>
