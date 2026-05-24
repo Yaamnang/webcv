@@ -1,0 +1,2272 @@
+/* =========================================================
+   YAMNANG — effects-driven studio page
+   All styles scoped under .yam to avoid leaking into the app.
+   ========================================================= */
+
+/* keep the browser chrome / overscroll dark on this route */
+html:has(.yam),
+body:has(.yam) {
+  background: #0c0c0c;
+}
+
+.yam {
+  --bg: #0c0c0c;
+  --bg-2: #141414;
+  --bg-3: #1c1c1b;
+  --fg: #f4f2ec;
+  --muted: #84817a;
+  --muted-2: #56544e;
+  --line: rgba(244, 242, 236, 0.12);
+  --accent: #ff5533;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  position: relative;
+}
+
+.yam *,
+.yam *::before,
+.yam *::after {
+  box-sizing: border-box;
+}
+
+.yam ::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* hide the native cursor only on devices that have a precise pointer */
+@media (hover: hover) and (pointer: fine) {
+  .yam,
+  .yam a,
+  .yam button {
+    cursor: none;
+  }
+}
+
+/* =========================================================
+   TYPOGRAPHY
+   ========================================================= */
+.yam-display {
+  font-size: clamp(2.6rem, 9.4vw, 9.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  font-weight: 600;
+  margin: 0;
+}
+
+.yam-h2 {
+  font-size: clamp(2rem, 5.4vw, 4.8rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  margin: 0;
+}
+
+.yam-h3 {
+  font-size: clamp(1.4rem, 2.4vw, 2.3rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  margin: 0;
+}
+
+.yam-eyebrow {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.yam-eyebrow::before {
+  content: "";
+  width: 1.4rem;
+  height: 1px;
+  background: var(--muted-2);
+}
+
+.yam-body {
+  font-size: clamp(1rem, 1.15vw, 1.22rem);
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0;
+}
+
+.yam-mono {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+}
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+.yam-container {
+  width: 100%;
+  max-width: 1680px;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 4.5rem);
+}
+
+.yam-section {
+  padding-block: clamp(5rem, 13vh, 13rem);
+  position: relative;
+}
+
+.yam-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+
+/* =========================================================
+   GRAIN + PROGRESS — global texture overlays
+   ========================================================= */
+.yam-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 9996;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.yam-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: var(--accent);
+  z-index: 9995;
+}
+
+/* =========================================================
+   CUSTOM CURSOR
+   ========================================================= */
+.yam-cursor,
+.yam-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+}
+.yam-cursor {
+  width: 7px;
+  height: 7px;
+  background: #fff;
+}
+.yam-cursor-ring {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: width 0.32s var(--ease), height 0.32s var(--ease),
+    opacity 0.32s var(--ease), background 0.32s var(--ease);
+}
+.yam-cursor-ring[data-state="hover"] {
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.yam-cursor-ring[data-state="hidden"] {
+  opacity: 0;
+}
+.yam-cursor-label {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0c0c0c;
+  background: var(--fg);
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  opacity: 0;
+  scale: 0.6;
+  transition: opacity 0.3s var(--ease), scale 0.3s var(--ease);
+}
+.yam-cursor-label[data-show="true"] {
+  opacity: 1;
+  scale: 1;
+}
+@media (hover: none), (pointer: coarse) {
+  .yam-cursor,
+  .yam-cursor-ring,
+  .yam-cursor-label {
+    display: none;
+  }
+}
+
+/* =========================================================
+   LOADER / INTRO
+   ========================================================= */
+.yam-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: #0c0c0c;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  transition: clip-path 1.1s var(--ease) 0.15s;
+  clip-path: inset(0 0 0 0);
+}
+.yam-loader[data-done="true"] {
+  clip-path: inset(0 0 100% 0);
+}
+.yam-loader-count {
+  font-size: clamp(4rem, 16vw, 13rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  font-variant-numeric: tabular-nums;
+}
+.yam-loader-word {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  overflow: hidden;
+}
+.yam-loader-word span {
+  display: inline-block;
+  transition: transform 0.6s var(--ease);
+}
+.yam-loader[data-done="true"] .yam-loader-word span,
+.yam-loader[data-done="true"] .yam-loader-count {
+  transform: translateY(110%);
+  transition: transform 0.6s var(--ease);
+}
+.yam-loader-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 5px;
+  background: var(--accent);
+  width: 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+/* click-to-start button — disappears once clicked */
+.yam-loader-start {
+  position: absolute;
+  bottom: clamp(5rem, 18vh, 12rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  background: transparent;
+  border: 1px solid rgba(244, 242, 236, 0.35);
+  color: var(--fg);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.95rem 1.8rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background 0.35s var(--ease),
+    color 0.35s var(--ease),
+    border-color 0.35s var(--ease);
+}
+.yam-loader-start:hover {
+  background: var(--fg);
+  color: #0c0c0c;
+  border-color: var(--fg);
+}
+
+/* center stage — Y mark + amnang reveal */
+.yam-loader-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: flex-end;
+  padding: 0.05em 0.1em 0.05em 0;
+}
+.yam-loader-y {
+  height: clamp(14rem, 50vh, 30rem);
+  width: auto;
+  display: block;
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+}
+.yam-loader-arm {
+  opacity: 0;
+}
+.yam-loader-arm line {
+  stroke: var(--fg);
+  stroke-width: 14;
+  stroke-linecap: butt;
+  fill: none;
+}
+.yam-loader-amnang {
+  font-size: clamp(4rem, 16vw, 13rem);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 0.85;
+  color: var(--fg);
+  opacity: 0;
+  margin-left: -0.3em;
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+  align-self: flex-end;
+}
+
+.yam-loader-start {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--fg);
+  padding: 0.85rem 1.7rem;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  z-index: 5;
+  transition: background 0.35s var(--ease), color 0.35s var(--ease),
+    border-color 0.35s var(--ease);
+}
+.yam-loader-start:hover {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+
+/* page fades up under the loader */
+.yam-stage {
+  opacity: 0;
+  transition: opacity 0.6s ease 0.2s;
+}
+.yam-stage[data-ready="true"] {
+  opacity: 1;
+}
+
+/* =========================================================
+   NAV
+   ========================================================= */
+.yam-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(1.1rem, 2.4vw, 1.8rem) clamp(1.25rem, 4vw, 4.5rem);
+  transition: background 0.45s var(--ease), backdrop-filter 0.45s var(--ease),
+    padding 0.45s var(--ease), border-color 0.45s var(--ease);
+  border-bottom: 1px solid transparent;
+}
+.yam-nav[data-scrolled="true"] {
+  background: rgba(12, 12, 12, 0.72);
+  backdrop-filter: blur(14px);
+  border-bottom-color: var(--line);
+  padding-block: clamp(0.8rem, 1.6vw, 1.1rem);
+}
+.yam-nav[data-hidden="true"] {
+  transform: translateY(-105%);
+}
+.yam-nav {
+  transition: transform 0.5s var(--ease), background 0.45s var(--ease),
+    backdrop-filter 0.45s var(--ease), padding 0.45s var(--ease),
+    border-color 0.45s var(--ease);
+}
+.yam-logo {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--fg);
+}
+.yam-nav-links {
+  display: flex;
+  gap: 2.2rem;
+  align-items: center;
+}
+@media (max-width: 860px) {
+  .yam-nav-links {
+    display: none;
+  }
+}
+.yam-navlink {
+  position: relative;
+  text-decoration: none;
+  color: var(--fg);
+  font-size: 0.95rem;
+  padding: 0.2rem 0;
+  overflow: hidden;
+}
+.yam-navlink span {
+  display: block;
+  transition: transform 0.4s var(--ease);
+}
+.yam-navlink span::after {
+  content: attr(data-text);
+  display: block;
+  position: absolute;
+  top: 100%;
+  left: 0;
+}
+.yam-navlink:hover span {
+  transform: translateY(-100%);
+}
+.yam-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--fg);
+  color: var(--bg);
+  border: none;
+  border-radius: 999px;
+  padding: 0.7rem 1.25rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  text-decoration: none;
+}
+.yam-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* burger */
+.yam-burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  z-index: 950;
+}
+.yam-burger span {
+  width: 26px;
+  height: 2px;
+  background: var(--fg);
+  transition: transform 0.4s var(--ease), opacity 0.3s var(--ease);
+}
+.yam-burger[data-open="true"] span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.yam-burger[data-open="true"] span:nth-child(2) {
+  opacity: 0;
+}
+.yam-burger[data-open="true"] span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+@media (max-width: 860px) {
+  .yam-burger {
+    display: flex;
+  }
+  .yam-nav-cta {
+    display: none;
+  }
+}
+
+/* mobile overlay menu */
+.yam-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 940;
+  background: var(--bg-2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.5rem, 6vw, 4rem);
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.8s var(--ease);
+}
+.yam-menu[data-open="true"] {
+  clip-path: inset(0 0 0% 0);
+}
+.yam-menu-link {
+  font-size: clamp(2.4rem, 11vw, 5.5rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  color: var(--fg);
+  line-height: 1.15;
+  display: block;
+  overflow: hidden;
+}
+.yam-menu-link span {
+  display: block;
+  transform: translateY(110%);
+  transition: transform 0.7s var(--ease);
+}
+.yam-menu[data-open="true"] .yam-menu-link span {
+  transform: translateY(0);
+}
+.yam-menu-link:nth-child(1) span {
+  transition-delay: 0.18s;
+}
+.yam-menu-link:nth-child(2) span {
+  transition-delay: 0.26s;
+}
+.yam-menu-link:nth-child(3) span {
+  transition-delay: 0.34s;
+}
+.yam-menu-link:nth-child(4) span {
+  transition-delay: 0.42s;
+}
+.yam-menu-link:hover {
+  color: var(--accent);
+}
+.yam-menu-foot {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* =========================================================
+   TERMINAL — hacker-feel section (matrix rain, panels, decrypt, glitches)
+   ========================================================= */
+.yam-terminal {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #000;
+  isolation: isolate;
+  font-family: var(--font-geist-mono), monospace;
+  color: #5bd1d7;
+}
+.yam-terminal-rain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.yam-terminal-col {
+  position: absolute;
+  top: -100%;
+  left: var(--col-x, 0);
+  margin: 0;
+  font-family: inherit;
+  font-size: clamp(0.7rem, 1.05vw, 1rem);
+  line-height: 1.15;
+  color: #5bd1d7;
+  text-shadow: 0 0 8px rgba(91, 209, 215, 0.75);
+  white-space: pre-line;
+  opacity: var(--col-opacity, 0.6);
+  animation: yam-terminal-rain var(--col-dur, 8s) linear infinite;
+  animation-delay: var(--col-delay, 0s);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 12%,
+    black 72%,
+    transparent 95%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 12%,
+    black 72%,
+    transparent 95%
+  );
+}
+@keyframes yam-terminal-rain {
+  0% {
+    transform: translateY(-15%);
+  }
+  100% {
+    transform: translateY(120vh);
+  }
+}
+.yam-terminal-scanlines {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    rgba(0, 0, 0, 0.4) 2px,
+    rgba(0, 0, 0, 0.4) 3px
+  );
+  mix-blend-mode: multiply;
+}
+.yam-terminal-window {
+  position: absolute;
+  z-index: 3;
+  background: rgba(8, 12, 18, 0.92);
+  border: 1px solid rgba(91, 209, 215, 0.4);
+  border-radius: 4px;
+  font-size: clamp(0.6rem, 0.78vw, 0.8rem);
+  color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow:
+    0 0 30px rgba(91, 209, 215, 0.22),
+    inset 0 0 25px rgba(0, 0, 0, 0.6);
+  will-change: opacity, transform;
+}
+.yam-terminal-window-bar {
+  padding: 0.45rem 0.7rem;
+  border-bottom: 1px solid rgba(91, 209, 215, 0.22);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.yam-terminal-dots {
+  display: flex;
+  gap: 0.32rem;
+}
+.yam-terminal-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(91, 209, 215, 0.45);
+}
+.yam-terminal-title {
+  font-size: 0.7rem;
+  color: rgba(91, 209, 215, 0.85);
+  letter-spacing: 0.1em;
+}
+.yam-terminal-window-body {
+  padding: 0.7rem 0.8rem;
+  color: #5bd1d7;
+  line-height: 1.55;
+}
+.yam-terminal-window-body > div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.yam-terminal-prompt {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+  color: #5bd1d7;
+}
+.yam-terminal-blink {
+  animation: yam-terminal-blink 1s steps(2) infinite;
+}
+@keyframes yam-terminal-blink {
+  50% {
+    opacity: 0;
+  }
+}
+.yam-terminal-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  pointer-events: none;
+}
+.yam-terminal-decrypt {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: clamp(2rem, 6vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #fff;
+  text-shadow:
+    0 0 20px rgba(91, 209, 215, 0.85),
+    0 0 45px rgba(91, 209, 215, 0.45);
+  white-space: nowrap;
+}
+.yam-terminal-cursor {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: clamp(2rem, 6vw, 5.5rem);
+  font-weight: 700;
+  color: #5bd1d7;
+  text-shadow: 0 0 15px rgba(91, 209, 215, 0.95);
+  animation: yam-terminal-blink 1s steps(2) infinite;
+}
+.yam-terminal-glitch {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 0, 80, 0.45) 0%,
+    transparent 30%,
+    transparent 70%,
+    rgba(0, 255, 220, 0.45) 100%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 50ms;
+}
+.yam-terminal-invert {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  background: #fff;
+  mix-blend-mode: difference;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 30ms;
+}
+.yam-terminal-yamflash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 11;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(4rem, 13vw, 12rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  text-shadow:
+    -3px 0 rgba(255, 0, 100, 0.85),
+    3px 0 rgba(0, 230, 230, 0.85),
+    0 0 60px rgba(255, 255, 255, 0.5);
+  transition: opacity 30ms;
+}
+
+/* =========================================================
+   MORPH — single blob shape mutates through 6 organic forms
+   ========================================================= */
+.yam-morph {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #1a0a2e;
+  isolation: isolate;
+  transition: background-color 0.1s linear;
+}
+.yam-morph-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80vmin;
+  height: 80vmin;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.12), transparent 60%);
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform, opacity;
+}
+.yam-morph-shape {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44vmin;
+  height: 44vmin;
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  background: linear-gradient(135deg, #ff5533, #ffd66e);
+  box-shadow:
+    0 0 80px rgba(255, 85, 51, 0.5),
+    0 0 200px rgba(255, 85, 51, 0.25),
+    inset 0 -20px 60px rgba(0, 0, 0, 0.4);
+  z-index: 3;
+  will-change: transform, border-radius, background;
+}
+.yam-morph-tagline {
+  position: absolute;
+  bottom: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  color: #fff;
+  font-size: clamp(2rem, 5.5vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  margin: 0;
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.4);
+  will-change: opacity, transform;
+}
+.yam-morph-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+/* =========================================================
+   STARGATE — portal opens to reveal a 3D orbital scene inside
+   ========================================================= */
+.yam-stargate {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #02030c;
+  isolation: isolate;
+  perspective: 1400px;
+}
+.yam-stargate-stars {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.yam-stargate-star {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.yam-stargate-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  width: 70vmin;
+  height: 70vmin;
+  border-radius: 50%;
+  border: 2px solid rgba(91, 209, 215, 0.55);
+  box-shadow:
+    0 0 60px rgba(91, 209, 215, 0.5),
+    inset 0 0 60px rgba(91, 209, 215, 0.4);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.yam-stargate-portal {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  clip-path: circle(var(--portal-r, 0%) at 50% 50%);
+  -webkit-clip-path: circle(var(--portal-r, 0%) at 50% 50%);
+  transform-style: preserve-3d;
+}
+.yam-stargate-scene {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.yam-stargate-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12vmin;
+  height: 12vmin;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 213, 110, 0.7) 35%,
+    rgba(255, 85, 51, 0.4) 65%,
+    transparent 90%
+  );
+  box-shadow:
+    0 0 80px rgba(255, 213, 110, 0.7),
+    0 0 160px rgba(255, 85, 51, 0.4);
+  will-change: transform;
+}
+.yam-stargate-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px dashed rgba(91, 209, 215, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+}
+.yam-stargate-planet {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 4px;
+  pointer-events: none;
+  will-change: transform;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+.yam-stargate-tagline {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  color: #fff;
+  font-size: clamp(2.2rem, 6.5vw, 6.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  text-shadow:
+    0 0 40px rgba(91, 209, 215, 0.55),
+    0 0 100px rgba(91, 209, 215, 0.3);
+  will-change: opacity, transform;
+}
+.yam-stargate-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 7;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+.yam-terminal-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(91, 209, 215, 0.7);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+/* =========================================================
+   LATTICE — GSAP 60-card choreography
+   ========================================================= */
+.yam-lattice {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #04060f;
+  perspective: 1500px;
+  perspective-origin: 50% 50%;
+  isolation: isolate;
+}
+.yam-lattice-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(91, 209, 215, 0.1), transparent 65%);
+  z-index: 0;
+  pointer-events: none;
+}
+.yam-lattice-grid {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 0.55vw;
+  width: 80vw;
+  height: 56vh;
+  transform-style: preserve-3d;
+  z-index: 2;
+}
+.yam-lattice-card {
+  position: relative;
+  border-radius: 5px;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  box-shadow: 0 12px 26px -10px rgba(0, 0, 0, 0.65);
+}
+.yam-lattice-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 5px;
+}
+.yam-lattice-face-back {
+  background: linear-gradient(135deg, #1a1a25, #0a0a14);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transform: rotateY(180deg);
+}
+.yam-lattice-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.95), transparent 60%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: opacity;
+}
+.yam-lattice-tagline {
+  position: absolute;
+  bottom: 7vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: #fff;
+  font-size: clamp(1.7rem, 3.2vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  will-change: opacity, transform;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+}
+.yam-lattice-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+/* =========================================================
+   FIELD — multi-layer GSAP parallax composition
+   ========================================================= */
+.yam-field {
+  position: relative;
+  height: 280vh;
+  background: #0a0a18;
+  overflow: hidden;
+  isolation: isolate;
+}
+.yam-field::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 28% 35%, rgba(91, 209, 215, 0.09), transparent 55%),
+    radial-gradient(circle at 72% 70%, rgba(255, 85, 51, 0.08), transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+.yam-field-rect {
+  position: absolute;
+  border-radius: 4px;
+  overflow: hidden;
+  will-change: transform;
+}
+.yam-field-rect[data-layer="bg"] {
+  filter: blur(12px) brightness(0.65);
+  opacity: 0.7;
+  z-index: 1;
+}
+.yam-field-rect[data-layer="mid"] {
+  z-index: 2;
+  box-shadow: 0 35px 70px -22px rgba(0, 0, 0, 0.55);
+}
+.yam-field-rect[data-layer="fg"] {
+  z-index: 3;
+  box-shadow: 0 45px 90px -22px rgba(0, 0, 0, 0.7);
+  filter: brightness(1.05) contrast(1.05);
+}
+.yam-field-headline {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  color: #fff;
+  font-size: clamp(2.5rem, 8vw, 8.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  text-align: center;
+  margin: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  will-change: opacity, transform;
+  text-shadow: 0 6px 50px rgba(0, 0, 0, 0.55);
+}
+.yam-field-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+/* =========================================================
+   DETONATE / DIVE — GSAP 3D POV dive through brand vocabulary
+   ========================================================= */
+.yam-dive {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  perspective: 1100px;
+  perspective-origin: 50% 50%;
+  background: #0a0612;
+  isolation: isolate;
+}
+.yam-dive-scene {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  z-index: 2;
+}
+.yam-dive-vortex {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80vmin;
+  height: 80vmin;
+  background:
+    conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(255, 85, 51, 0.6),
+      transparent 32%,
+      transparent 58%,
+      rgba(91, 209, 215, 0.45),
+      transparent 90%
+    );
+  border-radius: 50%;
+  filter: blur(60px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.75;
+  will-change: transform, opacity;
+}
+.yam-dive-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70vmin;
+  height: 85vmin;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.yam-dive-ring.accent {
+  border-color: rgba(255, 85, 51, 0.55);
+  border-width: 1px;
+}
+.yam-dive-word {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: clamp(2rem, 6vw, 6.5rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  text-transform: lowercase;
+  pointer-events: none;
+  will-change: transform, opacity;
+  text-shadow: 0 0 50px rgba(255, 255, 255, 0.25);
+  z-index: 3;
+}
+.yam-dive-particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  background: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+  z-index: 2;
+}
+.yam-dive-particle.accent {
+  background: #ff5533;
+  box-shadow: 0 0 8px #ff5533;
+}
+.yam-dive-final {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+  z-index: 5;
+  color: #fff;
+  font-size: clamp(3rem, 12vw, 13rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.yam-dive-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+/* =========================================================
+   INTRO ZOOM — first effect: brand zoom with encircling cards
+   ========================================================= */
+.yam-intro-zoom {
+  position: relative;
+  height: 200vh;
+  background: var(--bg);
+}
+.yam-intro-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.yam-intro-cards {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.yam-intro-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(7rem, 13vw, 16rem);
+  height: clamp(10rem, 18vh, 24rem);
+  border-radius: 6px;
+  overflow: hidden;
+  transform: translate(-50%, -50%);
+  will-change: transform, opacity;
+  box-shadow: 0 30px 60px -22px rgba(0, 0, 0, 0.55);
+}
+.yam-intro-card-fill {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+.yam-intro-card-1 .yam-intro-card-fill {
+  background: linear-gradient(150deg, #f6c177, #d68a4f 55%, #6e3f1d);
+}
+.yam-intro-card-2 .yam-intro-card-fill {
+  background: linear-gradient(180deg, #b6dbe6, #5895af 55%, #1d4156);
+}
+.yam-intro-card-3 .yam-intro-card-fill {
+  background: linear-gradient(160deg, #8a8a8a, #4d4d4d 55%, #161616);
+}
+.yam-intro-card-4 .yam-intro-card-fill {
+  background: linear-gradient(195deg, #4b6f8e, #1f3d56 55%, #08172b);
+}
+.yam-intro-card-5 .yam-intro-card-fill {
+  background: linear-gradient(165deg, #b0c987, #4f7237 55%, #1a2a13);
+}
+.yam-intro-card-6 .yam-intro-card-fill {
+  background: linear-gradient(140deg, #d59aa3, #7a3640 55%, #2b1c1e);
+}
+.yam-intro-name {
+  position: relative;
+  z-index: 2;
+  font-size: clamp(1.5rem, 3.2vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #fff;
+  text-align: center;
+  line-height: 1;
+  margin: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transform-origin: center;
+}
+.yam-intro-name-mark {
+  font-size: 0.26em;
+  vertical-align: super;
+  opacity: 0.55;
+  margin-left: 0.15em;
+  font-weight: 500;
+}
+.yam-intro-tagline {
+  position: absolute;
+  bottom: 6vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  will-change: opacity;
+}
+.yam-intro-tagline-line {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent);
+}
+
+@media (max-width: 720px) {
+  .yam-intro-card {
+    width: clamp(5rem, 22vw, 13rem);
+    height: clamp(7rem, 16vh, 18rem);
+  }
+}
+
+/* =========================================================
+   SCROLL HERO — pinned strip reveal (above the carousel hero)
+   ========================================================= */
+.yam-scrollhero {
+  position: relative;
+  height: 220vh;
+  background: var(--bg);
+}
+.yam-scrollhero-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.yam-scrollhero-strip {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 0 1.2rem;
+  z-index: 1;
+}
+.yam-scrollhero-card {
+  flex: 0 0 auto;
+  width: 17vw;
+  height: 78vh;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  transform-origin: center;
+  will-change: transform, opacity;
+  box-shadow: 0 30px 60px -22px rgba(0, 0, 0, 0.55);
+}
+.yam-scrollhero-card[data-middle="true"] {
+  z-index: 3;
+}
+.yam-scrollhero-card-fill {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+.yam-scrollhero-card-1 .yam-scrollhero-card-fill {
+  background: linear-gradient(160deg, #f6c177 0%, #d68a4f 55%, #6e3f1d 100%);
+}
+.yam-scrollhero-card-2 .yam-scrollhero-card-fill {
+  background: linear-gradient(190deg, #b6dbe6 0%, #5895af 55%, #1d4156 100%);
+}
+.yam-scrollhero-card-3 .yam-scrollhero-card-fill {
+  background:
+    radial-gradient(120% 80% at 50% 28%, rgba(255, 255, 255, 0.15), transparent 60%),
+    linear-gradient(160deg, #8a8a8a 0%, #4d4d4d 55%, #161616 100%);
+}
+.yam-scrollhero-card-4 .yam-scrollhero-card-fill {
+  background: linear-gradient(195deg, #4b6f8e 0%, #1f3d56 55%, #08172b 100%);
+}
+.yam-scrollhero-card-5 .yam-scrollhero-card-fill {
+  background: linear-gradient(165deg, #b0c987 0%, #4f7237 55%, #1a2a13 100%);
+}
+.yam-scrollhero-text {
+  position: relative;
+  z-index: 4;
+  text-align: center;
+  color: #fff;
+  pointer-events: none;
+  padding: 0 1.5rem;
+  max-width: 60rem;
+  will-change: transform, opacity;
+  text-shadow: 0 1px 30px rgba(0, 0, 0, 0.35);
+}
+.yam-scrollhero-text .yam-eyebrow {
+  color: rgba(255, 255, 255, 0.78);
+  justify-content: center;
+}
+.yam-scrollhero-text .yam-eyebrow::before {
+  background: rgba(255, 255, 255, 0.55);
+}
+.yam-scrollhero-headline {
+  font-size: clamp(3rem, 10vw, 9rem);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  color: #fff;
+  margin-top: 1.5rem;
+}
+.yam-scrollhero-cue {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.yam-scrollhero-cue-line {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), transparent);
+}
+
+@media (max-width: 720px) {
+  .yam-scrollhero {
+    height: 200vh;
+  }
+  .yam-scrollhero-card {
+    width: 28vw;
+    height: 68vh;
+  }
+  .yam-scrollhero-headline {
+    font-size: clamp(2.4rem, 12vw, 5rem);
+  }
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.yam-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: clamp(2.5rem, 6vw, 5rem);
+  overflow: hidden;
+}
+.yam-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.yam-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.4s var(--ease);
+}
+.yam-slide[data-active="true"] {
+  opacity: 1;
+}
+.yam-slide-inner {
+  position: absolute;
+  inset: -14%;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1);
+}
+.yam-slide[data-active="true"] .yam-slide-inner {
+  animation: yam-kenburns 7s ease-out forwards;
+}
+@keyframes yam-kenburns {
+  from {
+    transform: scale(1) translate(0, 0);
+  }
+  to {
+    transform: scale(1.14) translate(1.5%, -1.5%);
+  }
+}
+.yam-slide-1 .yam-slide-inner {
+  background-image: linear-gradient(135deg, #3a1d12, #c2502a 55%, #f0a35e);
+}
+.yam-slide-2 .yam-slide-inner {
+  background-image: linear-gradient(160deg, #11202b, #2d5c63 60%, #8fb9a8);
+}
+.yam-slide-3 .yam-slide-inner {
+  background-image: linear-gradient(135deg, #1a1a1a, #3a3a38 60%, #6c6a63);
+}
+.yam-slide-4 .yam-slide-inner {
+  background-image: linear-gradient(150deg, #0c1f33, #1f5f86 55%, #58b0c9);
+}
+.yam-slide-5 .yam-slide-inner {
+  background-image: linear-gradient(140deg, #14210f, #355426 55%, #82a35a);
+}
+.yam-hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(12, 12, 12, 0.55) 0%,
+    rgba(12, 12, 12, 0.15) 35%,
+    rgba(12, 12, 12, 0.85) 100%
+  );
+}
+.yam-hero-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+.yam-hero-top {
+  position: absolute;
+  top: clamp(7rem, 16vh, 11rem);
+  left: 0;
+  width: 100%;
+}
+.yam-hero-toprow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.yam-hero-headline {
+  display: flex;
+  flex-direction: column;
+}
+.yam-hero-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: clamp(1.6rem, 4vw, 3rem);
+  border-top: 1px solid var(--line);
+  padding-top: 1.6rem;
+}
+.yam-hero-dots {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.yam-hero-dot {
+  width: 26px;
+  height: 3px;
+  background: rgba(244, 242, 236, 0.25);
+  border: none;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+.yam-hero-dot[data-active="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--fg);
+  transform-origin: 0 50%;
+  animation: yam-dotfill 5s linear forwards;
+}
+@keyframes yam-dotfill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.yam-scrollcue {
+  position: absolute;
+  bottom: clamp(2.5rem, 6vw, 5rem);
+  right: clamp(1.25rem, 4vw, 4.5rem);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--muted);
+}
+.yam-scrollcue-line {
+  width: 1px;
+  height: 56px;
+  background: var(--line);
+  position: relative;
+  overflow: hidden;
+}
+.yam-scrollcue-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--fg);
+  animation: yam-scrollcue 2.2s var(--ease-io) infinite;
+}
+@keyframes yam-scrollcue {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* =========================================================
+   LINE / WORD REVEAL PRIMITIVES
+   ========================================================= */
+.yam-line {
+  overflow: hidden;
+  display: block;
+}
+.yam-line-inner {
+  display: block;
+  transform: translateY(110%);
+  transition: transform 1s var(--ease);
+}
+.yam-reveal-lines[data-in="true"] .yam-line-inner {
+  transform: translateY(0);
+}
+.yam-reveal-lines .yam-line:nth-child(2) .yam-line-inner {
+  transition-delay: 0.09s;
+}
+.yam-reveal-lines .yam-line:nth-child(3) .yam-line-inner {
+  transition-delay: 0.18s;
+}
+.yam-reveal-lines .yam-line:nth-child(4) .yam-line-inner {
+  transition-delay: 0.27s;
+}
+
+.yam-reveal {
+  opacity: 0;
+  transform: translateY(42px);
+  transition: opacity 0.95s var(--ease), transform 0.95s var(--ease);
+  transition-delay: var(--d, 0s);
+}
+.yam-reveal[data-in="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+.yam-reveal-clip {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1.1s var(--ease);
+  transition-delay: var(--d, 0s);
+}
+.yam-reveal-clip[data-in="true"] {
+  clip-path: inset(0 0 0% 0);
+}
+
+/* =========================================================
+   SHOWCASE — pinned horizontal scroll
+   ========================================================= */
+.yam-showcase {
+  position: relative;
+  height: 320vh;
+  background: var(--bg);
+}
+.yam-showcase-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.yam-showcase-track {
+  display: flex;
+  gap: clamp(1.25rem, 2.5vw, 2.5rem);
+  padding-inline: clamp(1.25rem, 4vw, 4.5rem);
+  will-change: transform;
+}
+.yam-showcase-intro {
+  flex: 0 0 auto;
+  width: min(80vw, 30rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.2rem;
+  padding-right: 2rem;
+}
+.yam-panel {
+  flex: 0 0 auto;
+  width: min(78vw, 34rem);
+  height: 64vh;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--line);
+}
+.yam-panel-fill {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.8s var(--ease);
+}
+.yam-panel:hover .yam-panel-fill {
+  transform: scale(1.07);
+}
+.yam-panel-1 .yam-panel-fill {
+  background-image: linear-gradient(135deg, #20242e, #4b5a7a 60%, #aab4d4);
+}
+.yam-panel-2 .yam-panel-fill {
+  background-image: linear-gradient(140deg, #2b1620, #7a3450 60%, #d39ab0);
+}
+.yam-panel-3 .yam-panel-fill {
+  background-image: linear-gradient(135deg, #1e2620, #3f6b4a 60%, #9cc9a4);
+}
+.yam-panel-4 .yam-panel-fill {
+  background-image: linear-gradient(150deg, #2c2410, #856a1f 60%, #d8c277);
+}
+.yam-panel-5 .yam-panel-fill {
+  background-image: linear-gradient(135deg, #241a2c, #5a3a7a 60%, #b69ad3);
+}
+.yam-panel-meta {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  background: linear-gradient(0deg, rgba(12, 12, 12, 0.7), transparent);
+}
+.yam-panel-num {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  color: rgba(244, 242, 236, 0.7);
+}
+
+/* =========================================================
+   SELECTED WORK — numbered list + cursor-following preview
+   ========================================================= */
+.yam-work-list {
+  border-top: 1px solid var(--line);
+}
+.yam-work-row {
+  display: grid;
+  grid-template-columns: 5rem 1fr auto;
+  align-items: center;
+  gap: 1.5rem;
+  padding: clamp(1.6rem, 3.4vw, 2.8rem) 0;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+  color: var(--fg);
+  position: relative;
+  transition: padding-left 0.5s var(--ease);
+}
+.yam-work-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--fg);
+  transform: scaleY(0);
+  transform-origin: 50% 100%;
+  transition: transform 0.5s var(--ease);
+  z-index: 0;
+}
+.yam-work-row:hover::before {
+  transform: scaleY(1);
+  transform-origin: 50% 0%;
+}
+.yam-work-row > * {
+  position: relative;
+  z-index: 1;
+  transition: color 0.4s var(--ease);
+}
+.yam-work-row:hover {
+  padding-left: clamp(0.75rem, 2vw, 2rem);
+}
+.yam-work-row:hover .yam-work-num,
+.yam-work-row:hover .yam-work-title,
+.yam-work-row:hover .yam-work-cat,
+.yam-work-row:hover .yam-work-arrow {
+  color: var(--bg);
+}
+.yam-work-num {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.yam-work-title {
+  font-size: clamp(1.8rem, 5vw, 4rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+.yam-work-cat {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.yam-work-arrow {
+  font-size: 1.5rem;
+  transition: transform 0.4s var(--ease), color 0.4s var(--ease);
+}
+.yam-work-row:hover .yam-work-arrow {
+  transform: rotate(-45deg) translateX(2px);
+}
+@media (max-width: 720px) {
+  .yam-work-row {
+    grid-template-columns: 3rem 1fr;
+  }
+  .yam-work-arrow {
+    display: none;
+  }
+  .yam-work-cat {
+    grid-column: 2;
+  }
+}
+
+.yam-work-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: clamp(200px, 21vw, 340px);
+  aspect-ratio: 5 / 6;
+  pointer-events: none;
+  z-index: 60;
+  border-radius: 5px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+  will-change: transform, opacity;
+}
+.yam-work-preview[data-show="true"] {
+  opacity: 1;
+}
+.yam-work-preview-fill {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+/* =========================================================
+   SERVICES — sticky stacking cards
+   ========================================================= */
+.yam-services {
+  position: relative;
+}
+.yam-service-card {
+  position: sticky;
+  height: 86svh;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(1.6rem, 4vw, 3.4rem);
+  background: var(--bg-2);
+  margin-bottom: 2.5rem;
+  will-change: transform;
+}
+.yam-service-card[data-tone="1"] {
+  background: linear-gradient(150deg, #161616, #241a16);
+}
+.yam-service-card[data-tone="2"] {
+  background: linear-gradient(150deg, #141616, #16242a);
+}
+.yam-service-card[data-tone="3"] {
+  background: linear-gradient(150deg, #161614, #20231a);
+}
+.yam-service-card[data-tone="4"] {
+  background: linear-gradient(150deg, #161416, #221a26);
+}
+.yam-service-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+.yam-service-index {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.yam-service-body {
+  max-width: 46rem;
+}
+.yam-service-title {
+  font-size: clamp(2rem, 6vw, 5rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+  margin: 0 0 1.2rem;
+}
+.yam-service-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 1.6rem;
+}
+.yam-tag {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+}
+
+/* =========================================================
+   MISSION — scroll-driven word fill
+   ========================================================= */
+.yam-mission {
+  padding-block: clamp(7rem, 20vh, 18rem);
+}
+.yam-mission-text {
+  font-size: clamp(1.8rem, 5.6vw, 5.4rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+.yam-word {
+  color: var(--muted-2);
+  transition: color 0.35s var(--ease);
+  display: inline-block;
+}
+.yam-word[data-lit="true"] {
+  color: var(--fg);
+}
+.yam-word-accent[data-lit="true"] {
+  color: var(--accent);
+}
+
+/* =========================================================
+   MARQUEE
+   ========================================================= */
+.yam-marquee {
+  display: flex;
+  overflow: hidden;
+  gap: 0;
+  border-block: 1px solid var(--line);
+  padding-block: clamp(1.2rem, 3vw, 2.2rem);
+  user-select: none;
+}
+.yam-marquee-track {
+  display: flex;
+  flex-shrink: 0;
+  gap: 2.5rem;
+  padding-right: 2.5rem;
+  will-change: transform;
+  animation: yam-marquee 26s linear infinite;
+}
+.yam-marquee:hover .yam-marquee-track {
+  animation-play-state: paused;
+}
+@keyframes yam-marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+.yam-marquee-item {
+  font-size: clamp(2rem, 6vw, 5rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  white-space: nowrap;
+  transform: skewX(var(--vskew, 0deg));
+}
+.yam-marquee-star {
+  color: var(--accent);
+  font-size: 0.6em;
+}
+.yam-marquee-item[data-outline="true"] {
+  -webkit-text-stroke: 1px var(--muted);
+  color: transparent;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.yam-footer {
+  background: var(--bg-2);
+  border-top: 1px solid var(--line);
+  padding-top: clamp(4rem, 9vw, 8rem);
+  position: relative;
+}
+.yam-footer-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-bottom: clamp(4rem, 9vw, 8rem);
+  border-bottom: 1px solid var(--line);
+}
+.yam-footer-link {
+  font-size: clamp(2.4rem, 9vw, 7.5rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  color: var(--fg);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+  width: fit-content;
+  transition: color 0.4s var(--ease);
+}
+.yam-footer-link:hover {
+  color: var(--accent);
+}
+.yam-footer-link svg {
+  width: clamp(2rem, 6vw, 5rem);
+  height: clamp(2rem, 6vw, 5rem);
+  transition: transform 0.5s var(--ease);
+}
+.yam-footer-link:hover svg {
+  transform: rotate(45deg);
+}
+.yam-footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 2.5rem;
+  padding-block: clamp(3rem, 6vw, 5rem);
+}
+@media (max-width: 760px) {
+  .yam-footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.yam-footer-col h4 {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 1.2rem;
+  font-weight: 400;
+}
+.yam-footer-col a {
+  display: block;
+  color: var(--fg);
+  text-decoration: none;
+  padding: 0.35rem 0;
+  width: fit-content;
+  position: relative;
+}
+.yam-footer-col a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0.2rem;
+  width: 100%;
+  height: 1px;
+  background: var(--fg);
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  transition: transform 0.4s var(--ease);
+}
+.yam-footer-col a:hover::after {
+  transform: scaleX(1);
+  transform-origin: 0 50%;
+}
+.yam-footer-wordmark {
+  font-size: clamp(4rem, 23vw, 22rem);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 0.8;
+  text-align: center;
+  padding-block: clamp(1rem, 3vw, 2.5rem);
+  background: linear-gradient(180deg, var(--fg) 30%, transparent 130%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: flex;
+  justify-content: center;
+}
+.yam-footer-wordmark span {
+  display: inline-block;
+  transition: transform 0.45s var(--ease);
+}
+.yam-footer-wordmark:hover span {
+  animation: yam-footer-wave 1.4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.07s);
+}
+@keyframes yam-footer-wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10%); }
+}
+
+/* live transmission strip at the very top of the footer */
+.yam-footer-stream {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem clamp(1.25rem, 4vw, 4.5rem);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.yam-footer-stream-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+.yam-footer-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6ee07a;
+  box-shadow: 0 0 12px rgba(110, 224, 122, 0.85);
+  animation: yam-footer-pulse 1.6s ease-in-out infinite;
+}
+@keyframes yam-footer-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.55; }
+}
+.yam-footer-base {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-block: 1.8rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+}
+.yam-totop {
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--fg);
+  padding: 0.6rem 1.1rem;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* =========================================================
+   SHARED — buttons, links, parallax helpers
+   ========================================================= */
+.yam-link-underline {
+  position: relative;
+  text-decoration: none;
+  color: var(--fg);
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.yam-link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  transition: transform 0.45s var(--ease);
+}
+.yam-link-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: 0 50%;
+}
+.yam-magnetic {
+  display: inline-flex;
+  will-change: transform;
+}
+[data-parallax] {
+  will-change: transform;
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .yam *,
+  .yam *::before,
+  .yam *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .yam-reveal,
+  .yam-reveal-clip,
+  .yam-line-inner {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+}

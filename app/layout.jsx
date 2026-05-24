@@ -12,8 +12,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "SonamDorjiWeb",
-  description: "Personal portfolio website of Sonam Dorji",
+  title: "Yamnang — Creative Development Studio",
+  description:
+    "Yamnang is an independent design and development studio crafting brands, websites and digital products with motion and intent.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/y-mark.svg", type: "image/svg+xml" },
+    ],
+    apple: "/y-mark.svg",
+  },
 };
 
 export default function RootLayout({ children }) {
