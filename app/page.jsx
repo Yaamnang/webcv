@@ -20,6 +20,16 @@ import Terminal from "./components/Terminal";
 import Lattice from "./components/Lattice";
 import Stargate from "./components/Stargate";
 import Morph from "./components/Morph";
+import Constellation from "./components/Constellation";
+import Metaballs from "./components/Metaballs";
+import PhysicsDrop from "./components/PhysicsDrop";
+import Typewriter from "./components/Typewriter";
+import DollyZoom from "./components/DollyZoom";
+import Origami from "./components/Origami";
+import Pendulum from "./components/Pendulum";
+import Waveform from "./components/Waveform";
+import Numbers from "./components/Numbers";
+import Qrcode from "./components/Qrcode";
 import Footer from "./components/Footer";
 
 export default function YamnangPage() {
@@ -82,6 +92,16 @@ export default function YamnangPage() {
           <Lattice />
           <Stargate />
           <Morph />
+          <Constellation />
+          <Metaballs />
+          <PhysicsDrop />
+          <Typewriter />
+          <DollyZoom />
+          <Origami />
+          <Pendulum />
+          <Waveform />
+          <Numbers />
+          <Qrcode />
           <Footer />
         </div>
       </SmoothScroll>

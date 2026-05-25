@@ -239,7 +239,7 @@ body:has(.yam) {
   clip-path: inset(0 0 100% 0);
 }
 .yam-loader-count {
-  font-size: clamp(4rem, 16vw, 13rem);
+  font-size: clamp(1.4rem, 3.5vw, 2.8rem);
   font-weight: 600;
   letter-spacing: -0.04em;
   line-height: 0.85;
@@ -304,7 +304,7 @@ body:has(.yam) {
 /* center stage — Y mark + amnang reveal */
 .yam-loader-mark {
   position: absolute;
-  top: 50%;
+  top: 58%;
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
@@ -312,7 +312,7 @@ body:has(.yam) {
   padding: 0.05em 0.1em 0.05em 0;
 }
 .yam-loader-y {
-  height: clamp(14rem, 50vh, 30rem);
+  height: clamp(5rem, 19vw, 15.2rem);
   width: auto;
   display: block;
   flex: 0 0 auto;
@@ -336,7 +336,7 @@ body:has(.yam) {
   line-height: 0.85;
   color: var(--fg);
   opacity: 0;
-  margin-left: -0.3em;
+  margin-left: -0.2em;
   position: relative;
   z-index: 1;
   white-space: nowrap;
@@ -2269,4 +2269,777 @@ body:has(.yam) {
     transform: none !important;
     clip-path: none !important;
   }
+}
+
+/* =========================================================
+   WAVEFORM — vertical bars reacting to scroll velocity
+   ========================================================= */
+.yam-waveform {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #07090f;
+  isolation: isolate;
+}
+.yam-waveform-bars {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4vw;
+  padding: 0 6vw;
+}
+.yam-waveform-bar {
+  flex: 1 1 auto;
+  height: 50vh;
+  background: linear-gradient(180deg, #5bd1d7, #1f6669);
+  border-radius: 999px;
+  transform-origin: center;
+  transform: scaleY(0.04);
+  will-change: transform;
+  box-shadow: 0 0 10px rgba(91, 209, 215, 0.5);
+}
+.yam-waveform-tagline {
+  position: absolute;
+  bottom: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  color: #fff;
+  font-size: clamp(2rem, 5.5vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  margin: 0;
+  text-shadow: 0 0 40px rgba(91, 209, 215, 0.45);
+  will-change: opacity, transform;
+}
+.yam-waveform-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(91, 209, 215, 0.7);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+/* =========================================================
+   METABALLS — SVG mercury blobs via gaussian-blur + colormatrix
+   ========================================================= */
+.yam-metaballs {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #0a0612;
+  isolation: isolate;
+}
+.yam-metaballs-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.yam-metaballs-tagline {
+  position: absolute;
+  bottom: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  color: #fff;
+  font-size: clamp(2rem, 5.5vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  margin: 0;
+  text-shadow: 0 0 50px rgba(0, 0, 0, 0.6);
+  will-change: opacity, transform;
+}
+.yam-metaballs-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+/* =========================================================
+   CONSTELLATION — network of nodes, lines draw via dashoffset
+   ========================================================= */
+.yam-constellation {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #030616;
+  isolation: isolate;
+}
+.yam-constellation-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.yam-constellation-node {
+  fill: rgba(255, 255, 255, 0.85);
+  filter: drop-shadow(0 0 4px rgba(91, 209, 215, 0.7));
+}
+.yam-constellation-node.main {
+  fill: #ff5533;
+  filter: drop-shadow(0 0 8px rgba(255, 85, 51, 0.9));
+}
+.yam-constellation-line {
+  stroke: rgba(91, 209, 215, 0.35);
+  stroke-width: 0.15;
+  fill: none;
+}
+.yam-constellation-line.main {
+  stroke: #ff5533;
+  stroke-width: 0.5;
+  filter: drop-shadow(0 0 3px rgba(255, 85, 51, 0.6));
+}
+.yam-constellation-tagline {
+  position: absolute;
+  bottom: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  color: #fff;
+  font-size: clamp(2rem, 5.5vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  margin: 0;
+  text-shadow: 0 0 40px rgba(255, 85, 51, 0.4);
+  will-change: opacity, transform;
+}
+.yam-constellation-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+/* =========================================================
+   PHYSICS DROP — rectangles fall with bounce.out
+   ========================================================= */
+.yam-physics {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #0c0c0c;
+  isolation: isolate;
+}
+.yam-physics-rect {
+  position: absolute;
+  border-radius: 3px;
+  will-change: transform;
+  box-shadow: 0 14px 28px -8px rgba(0, 0, 0, 0.55);
+}
+.yam-physics-tagline {
+  position: absolute;
+  top: 18vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  color: #fff;
+  font-size: clamp(2rem, 5.5vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  margin: 0;
+  will-change: opacity, transform;
+}
+.yam-physics-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+/* =========================================================
+   TYPEWRITER — multiple lines typing at varied speeds
+   ========================================================= */
+.yam-typewriter {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #060708;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.yam-typewriter-lines {
+  width: 100%;
+  padding: 0 clamp(1.5rem, 6vw, 6rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.yam-typewriter-line {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: clamp(1.4rem, 3.6vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.95);
+  white-space: pre;
+  min-height: 1.1em;
+  line-height: 1.1;
+}
+.yam-typewriter-line:nth-child(even) {
+  color: #5bd1d7;
+}
+.yam-typewriter-tagline {
+  position: absolute;
+  bottom: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  color: #fff;
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  margin: 0;
+  text-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+  will-change: opacity, transform;
+}
+.yam-typewriter-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+/* =========================================================
+   DOLLY ZOOM — perspective shrinks while scene moves forward
+   ========================================================= */
+.yam-dolly {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #020308;
+  isolation: isolate;
+}
+.yam-dolly-scene {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  perspective: 1800px;
+  perspective-origin: center;
+}
+.yam-dolly-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70vw;
+  height: 60vh;
+  margin-left: -35vw;
+  margin-top: -30vh;
+  border-radius: 6px;
+  will-change: transform;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.55);
+  opacity: 0.92;
+}
+.yam-dolly-focal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  color: #fff;
+  font-size: clamp(2.5rem, 8vw, 8rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  pointer-events: none;
+  will-change: transform;
+  text-shadow: 0 0 50px rgba(255, 255, 255, 0.4);
+}
+.yam-dolly-tagline {
+  position: absolute;
+  bottom: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  color: #fff;
+  font-size: clamp(1.5rem, 3.4vw, 2.7rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  margin: 0;
+  will-change: opacity, transform;
+}
+.yam-dolly-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 7;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+/* =========================================================
+   ORIGAMI — four panels unfold like hinged paper
+   ========================================================= */
+.yam-origami {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #0c0a14;
+  isolation: isolate;
+  perspective: 1600px;
+  perspective-origin: center;
+}
+.yam-origami-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 76vmin;
+  height: 50vmin;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.6vmin;
+  transform-style: preserve-3d;
+}
+.yam-origami-panel {
+  position: relative;
+  border-radius: 5px;
+  will-change: transform, opacity;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.6);
+}
+.yam-origami-label {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: clamp(1.2rem, 3vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+.yam-origami-tagline {
+  position: absolute;
+  bottom: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  color: #fff;
+  font-size: clamp(1.6rem, 4vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  margin: 0;
+  will-change: opacity, transform;
+}
+.yam-origami-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+/* =========================================================
+   PENDULUM — swing with decay, drops items into place
+   ========================================================= */
+.yam-pendulum {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #0a0a14;
+  isolation: isolate;
+}
+.yam-pendulum-mount {
+  position: absolute;
+  top: 6vh;
+  left: 50%;
+  width: 8vmin;
+  height: 8vmin;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #555, #1c1c1c 70%);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+.yam-pendulum-arm {
+  position: absolute;
+  top: 10vh;
+  left: 50%;
+  width: 1px;
+  height: 55vh;
+  margin-left: -0.5px;
+  z-index: 1;
+  will-change: transform;
+}
+.yam-pendulum-thread {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1.5px;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15));
+  transform: translateX(-50%);
+}
+.yam-pendulum-weight {
+  position: absolute;
+  bottom: -3vmin;
+  left: 50%;
+  width: 10vmin;
+  height: 10vmin;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffd66e, #b6862c 60%, #4d340a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: rgba(0, 0, 0, 0.8);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.55),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.35),
+    0 0 30px rgba(255, 214, 110, 0.35);
+}
+.yam-pendulum-items {
+  position: absolute;
+  bottom: 18vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1.5vw;
+  z-index: 3;
+}
+.yam-pendulum-item {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: clamp(1rem, 1.6vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #fff;
+  padding: 0.7rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  will-change: opacity, transform;
+}
+.yam-pendulum-tagline {
+  position: absolute;
+  bottom: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: clamp(1.4rem, 2.8vw, 2.2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  margin: 0;
+  will-change: opacity, transform;
+}
+.yam-pendulum-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+/* =========================================================
+   NUMBERS — animated CV stat counters
+   ========================================================= */
+.yam-numbers {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #06080d;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.yam-numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3vw;
+  width: 90vw;
+  padding: 0 2vw;
+}
+.yam-numbers-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 1rem 0;
+}
+.yam-numbers-ring {
+  position: absolute;
+  top: 30%;
+  left: -10%;
+  width: 75%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(91, 209, 215, 0.18),
+    transparent 60%
+  );
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  opacity: 0.4;
+}
+.yam-numbers-cell:nth-child(2) .yam-numbers-ring {
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 85, 51, 0.18),
+    transparent 60%
+  );
+}
+.yam-numbers-cell:nth-child(3) .yam-numbers-ring {
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 214, 110, 0.18),
+    transparent 60%
+  );
+}
+.yam-numbers-cell:nth-child(4) .yam-numbers-ring {
+  background: radial-gradient(
+    circle at center,
+    rgba(164, 137, 184, 0.18),
+    transparent 60%
+  );
+}
+.yam-numbers-label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.yam-numbers-value {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(4rem, 11vw, 11rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 60px rgba(91, 209, 215, 0.25);
+}
+.yam-numbers-desc {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  max-width: 14rem;
+}
+@media (max-width: 860px) {
+  .yam-numbers-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4vh 4vw;
+  }
+}
+.yam-numbers-tagline {
+  position: absolute;
+  bottom: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  color: #fff;
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  margin: 0;
+  will-change: opacity, transform;
+}
+.yam-numbers-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+/* =========================================================
+   QR — real scannable matrix assembled by incoming particles
+   ========================================================= */
+.yam-qr {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #0a0a0a;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.yam-qr-panel {
+  position: relative;
+  width: 64vmin;
+  height: 64vmin;
+  background: #fff;
+  border-radius: 1.6vmin;
+  padding: 4vmin;
+  box-shadow:
+    0 30px 90px -20px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  z-index: 2;
+}
+.yam-qr-matrix {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.yam-qr-cell {
+  position: absolute;
+  background: #0a0a0a;
+  border-radius: 0.15vmin;
+  will-change: transform, opacity;
+  opacity: 0;
+}
+.yam-qr-tagline {
+  position: absolute;
+  bottom: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  color: #fff;
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  margin: 0;
+  will-change: opacity, transform;
+}
+.yam-qr-caption {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  display: flex;
+  gap: 0.65rem;
+  pointer-events: none;
 }

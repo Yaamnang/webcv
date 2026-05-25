@@ -128,7 +128,7 @@ export default function Loader({ onDone }) {
       <div className="yam-loader-mark" ref={markRef}>
         <svg
           className="yam-loader-y"
-          viewBox="0 0 100 140"
+          viewBox="0 5 100 128"
           aria-hidden="true"
           preserveAspectRatio="xMidYMid meet"
         >
