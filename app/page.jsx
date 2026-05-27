@@ -6,9 +6,9 @@ import { SmoothScroll, onScroll } from "./lib/effects";
 import Loader from "./components/Loader";
 import Cursor from "./components/Cursor";
 import Nav from "./components/Nav";
-import IntroZoom from "./components/IntroZoom";
-import ScrollHero from "./components/ScrollHero";
+import terminal from "./components/Terminal";
 import Hero from "./components/Hero";
+import ScrollHero from "./components/ScrollHero";
 import Marquee from "./components/Marquee";
 import Showcase from "./components/Showcase";
 import Work from "./components/Work";
@@ -16,7 +16,6 @@ import Services from "./components/Services";
 import Detonate from "./components/Detonate";
 import Mission from "./components/Mission";
 import Field from "./components/Field";
-import Terminal from "./components/Terminal";
 import Lattice from "./components/Lattice";
 import Stargate from "./components/Stargate";
 import Morph from "./components/Morph";
@@ -29,15 +28,16 @@ import Origami from "./components/Origami";
 import Pendulum from "./components/Pendulum";
 import Waveform from "./components/Waveform";
 import Numbers from "./components/Numbers";
+import Timeline from "./components/Timeline";
+import Now from "./components/Now";
 import Qrcode from "./components/Qrcode";
 import Footer from "./components/Footer";
 
 export default function YamnangPage() {
   const [intro, setIntro] = useState(true);
-  const [loaderGone, setLoaderGone] = useState(false);
   const progressRef = useRef(null);
 
-  /* pin to the top and lock scrolling while the intro plays */
+  /* lock scroll until the intro animation finishes */
   useEffect(() => {
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
@@ -59,28 +59,26 @@ export default function YamnangPage() {
 
   const handleIntroDone = () => {
     setIntro(false);
-    if (window.__lenis) {
-      window.__lenis.scrollTo(0, { immediate: true });
-      window.__lenis.start();
-    } else {
-      document.documentElement.style.overflow = "";
-    }
-    window.setTimeout(() => setLoaderGone(true), 1500);
+    /* scroll position + lenis.start() handled by Loader after terminal sequence */
+    if (!window.__lenis) document.documentElement.style.overflow = "";
   };
 
   return (
     <main className="yam">
-      {!loaderGone && <Loader onDone={handleIntroDone} />}
       <Cursor />
       <div className="yam-grain" aria-hidden="true" />
       <div className="yam-progress" ref={progressRef} aria-hidden="true" />
 
       <SmoothScroll>
+        <Loader onDone={handleIntroDone} />
         <div className="yam-stage" data-ready={intro ? "false" : "true"}>
           <Nav />
-          <IntroZoom />
+          <terminal />
           <ScrollHero start={!intro} />
+        
+     
           <Hero start={!intro} />
+          
           <Marquee />
           <Showcase />
           <Work />
@@ -88,7 +86,6 @@ export default function YamnangPage() {
           <Detonate />
           <Mission />
           <Field />
-          <Terminal />
           <Lattice />
           <Stargate />
           <Morph />
@@ -101,6 +98,8 @@ export default function YamnangPage() {
           <Pendulum />
           <Waveform />
           <Numbers />
+          <Timeline />
+          <Now />
           <Qrcode />
           <Footer />
         </div>

@@ -7,6 +7,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+  /* transform-based pinning avoids the pin-spacer DOM mutation
+     that conflicts with React's reconciler (removeChild errors). */
+  ScrollTrigger.defaults({ pinType: "transform" });
 }
 
 /* ---------------------------------------------------------
@@ -122,9 +125,10 @@ export function useReveal({ threshold = 0.18, rootMargin = "0px 0px -8% 0px" } =
       setInView(true);
       return;
     }
+    let active = true;
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (active && entry.isIntersecting) {
           setInView(true);
           io.disconnect();
         }
@@ -132,7 +136,10 @@ export function useReveal({ threshold = 0.18, rootMargin = "0px 0px -8% 0px" } =
       { threshold, rootMargin }
     );
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      active = false;
+      io.disconnect();
+    };
   }, [threshold, rootMargin]);
 
   return [ref, inView];
